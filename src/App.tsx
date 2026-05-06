@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import SearchCard from '@/components/SearchCard';
 import ThemeToggle from '@/components/ThemeToggle';
 import ApiDocs from '@/sections/ApiDocs';
@@ -8,6 +8,10 @@ const App: React.FC = () => {
   const [currentHost, setCurrentHost] = useState<string>(
     () => new URLSearchParams(window.location.search).get('host') ?? ''
   );
+
+  useEffect(() => {
+    document.title = currentHost ? `${currentHost} – isbadip.com` : 'isbadip.com';
+  }, [currentHost]);
 
   const handleHostChange = useCallback((host: string) => {
     setCurrentHost(host);
