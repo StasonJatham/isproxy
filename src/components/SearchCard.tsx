@@ -40,7 +40,7 @@ const SearchCard: React.FC<SearchCardProps> = ({ onHostChange, initialHost = '' 
     async (e: React.FormEvent) => {
       e.preventDefault();
       const trimmed = query.trim();
-      if (!trimmed || status === 'loading') return;
+      if (!trimmed || status === 'loading' || status === 'warming_up') return;
 
       setShowResult(true);
       onHostChange?.(trimmed);
@@ -56,7 +56,8 @@ const SearchCard: React.FC<SearchCardProps> = ({ onHostChange, initialHost = '' 
     }
   }, [status]);
 
-  const isLoading = status === 'loading';
+  const isLoading = status === 'loading' || status === 'warming_up';
+  const isWarmingUp = status === 'warming_up';
   const hasResult = status === 'success' && result !== null;
   const hasError = status === 'error';
 
@@ -171,7 +172,14 @@ const SearchCard: React.FC<SearchCardProps> = ({ onHostChange, initialHost = '' 
           >
             {isLoading && (
               <div className="text-center py-6 text-text-muted animate-fade-up">
-                <p>Looking up reputation data...</p>
+                {isWarmingUp ? (
+                  <div className="flex flex-col items-center gap-2">
+                    <p className="font-medium text-accent-blue">Service is warming up…</p>
+                    <p className="text-sm">Loading blocklist data from disk. Retrying automatically every 10s.</p>
+                  </div>
+                ) : (
+                  <p>Looking up reputation data...</p>
+                )}
               </div>
             )}
 

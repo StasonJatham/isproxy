@@ -85,29 +85,48 @@ export function useReputationCheck() {
     setError(null);
     setResult(null);
 
-    try {
-      const response = await fetch(
-        `${API_BASE_URL}/api/v1/host/${encodeURIComponent(query)}`,
-        {
-          method: 'GET',
-          headers: {
-            'Accept': 'application/json',
-          },
+    const MAX_WARMUP_RETRIES = 4;
+    const RETRY_DELAY_MS = 10_000;
+
+    for (let attempt = 0; attempt <= MAX_WARMUP_RETRIES; attempt++) {
+      try {
+        const response = await fetch(
+          `${API_BASE_URL}/api/v1/host/${encodeURIComponent(query)}`,
+          {
+            method: 'GET',
+            headers: {
+              'Accept': 'application/json',
+            },
+          }
+        );
+
+        // Service is warming up — wait and retry automatically
+        if (response.status === 503 && attempt < MAX_WARMUP_RETRIES) {
+          setStatus('warming_up');
+          await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS));
+          setStatus('loading');
+          continue;
         }
-      );
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data: HostApiResponse = await response.json();
+        setResult(mapApiResponse(data));
+        setStatus('success');
+        return;
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred';
+        setError({ message: errorMessage });
+        setStatus('error');
+        return;
       }
-
-      const data: HostApiResponse = await response.json();
-      setResult(mapApiResponse(data));
-      setStatus('success');
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred';
-      setError({ message: errorMessage });
-      setStatus('error');
     }
+
+    // Exhausted retries — still warming up
+    setError({ message: 'Service is still warming up after several retries. Please try again in a moment.' });
+    setStatus('error');
   }, []);
 
   return { check, status, result, error };

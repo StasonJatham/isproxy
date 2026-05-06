@@ -7,7 +7,7 @@ export interface ReputationResult {
   details?: Record<string, string | number | boolean | null>;
 }
 
-export type ApiStatus = 'idle' | 'loading' | 'success' | 'error';
+export type ApiStatus = 'idle' | 'loading' | 'warming_up' | 'success' | 'error';
 
 export interface ApiError {
   message: string;
