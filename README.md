@@ -38,6 +38,17 @@ VITE_API_BASE_URL=https://api.isbadip.com
 
 If unset, production builds default to `https://api.isbadip.com` and dev uses the Vite proxy.
 
+## Data
+
+Threat intelligence data is sourced from multiple public feeds and updated **every 6 hours**. Results reflect the state of those feeds at the time of the last refresh.
+
+## Author
+
+Built by Karl — security tinkerer and homelab enthusiast.
+
+- Blog: [karl.fail](https://karl.fail)
+- Business: [karlcom.de](https://karlcom.de)
+
 ## License
 
 MIT
