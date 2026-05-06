@@ -13,6 +13,10 @@ A small, privacy-respecting web app that checks whether an IPv4 address or hostn
 curl https://api.isbadip.com/api/v1/host/8.8.8.8
 ```
 
+## Data freshness
+
+Threat intelligence lists are refreshed **daily** from multiple public sources. The database is rebuilt automatically every night so results always reflect the latest known malicious IPs and domains.
+
 ## Stack
 
 - React 19 + Vite 8 + TypeScript 6
@@ -38,16 +42,9 @@ VITE_API_BASE_URL=https://api.isbadip.com
 
 If unset, production builds default to `https://api.isbadip.com` and dev uses the Vite proxy.
 
-## Data
-
-Threat intelligence data is sourced from multiple public feeds and updated **every 6 hours**. Results reflect the state of those feeds at the time of the last refresh.
-
 ## Author
 
-Built by Karl — security tinkerer and homelab enthusiast.
-
-- Blog: [karl.fail](https://karl.fail)
-- Business: [karlcom.de](https://karlcom.de)
+Built by Karl — [karl.fail](https://karl.fail) · [karlcom.de](https://karlcom.de)
 
 ## License
 
