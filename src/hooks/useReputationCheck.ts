@@ -70,7 +70,6 @@ function mapApiResponse(data: HostApiResponse): ReputationResult {
       top_1m_rank: rank ?? null,
       resolved_ips: resolvedIPs.length > 0 ? resolvedIPs.join(', ') : null,
       hostnames: hostnames.length > 0 ? hostnames.join(', ') : null,
-      cached: data.cached ?? false,
     },
   };
 }

@@ -49,8 +49,7 @@ console.log(result.malicious); // true or false`;
     "country": "US",
     "city": "Los Angeles"
   },
-  "resolvedIPs": ["93.184.216.34"],
-  "cached": true
+  "resolvedIPs": ["93.184.216.34"]
 }`;
 
   const scrollRevealClass = (visible: boolean) =>
