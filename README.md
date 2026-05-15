@@ -17,14 +17,14 @@ This frontend is the browser-facing sibling to `isbadip`, but the result model i
 
 The backend is currently served by the shared public API host and selected in request mode:
 
-- `GET https://api.isbadip.com/api/v1/host/{query}?mode=proxy`
+- `GET https://api.isproxy.org/api/v1/host/{query}?mode=proxy`
 - header: `x-isproxy-service: 1`
 
 ## Status
 
 - frontend is ready
 - API path is live
-- `isproxy.org` / `api.isproxy.org` DNS is not yet delegated
+- `api.isproxy.org` is live behind Cloudflare
 
 ## Local development
 
@@ -40,7 +40,7 @@ npm run preview
 Optional `.env`:
 
 ```bash
-VITE_API_BASE_URL=https://api.isbadip.com
+VITE_API_BASE_URL=https://api.isproxy.org
 ```
 
 ## Notes

@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import type { ReputationResult, ApiStatus, ApiError, HostApiResponse } from '@/types/api';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? (import.meta.env.DEV ? '' : 'https://api.isbadip.com');
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? (import.meta.env.DEV ? '' : 'https://api.isproxy.org');
 
 function confidenceScore(confidence: HostApiResponse['privacy']['confidence'], detected: boolean) {
   if (!detected) return 0;

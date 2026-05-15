@@ -18,13 +18,13 @@ const ApiDocs: React.FC<ApiDocsProps> = ({ host }) => {
   const exampleHost = host?.trim() || '185.220.101.1';
   const exampleDomain = host?.trim() || 'google.com';
 
-  const curlCode = `curl "https://api.isbadip.com/api/v1/host/${exampleHost}?mode=proxy" \\
+  const curlCode = `curl "https://api.isproxy.org/api/v1/host/${exampleHost}?mode=proxy" \\
   -H "x-isproxy-service: 1"`;
 
   const pythonCode = `import requests
 
 response = requests.get(
-    "https://api.isbadip.com/api/v1/host/${exampleHost}?mode=proxy",
+    "https://api.isproxy.org/api/v1/host/${exampleHost}?mode=proxy",
     headers={"x-isproxy-service": "1"},
 )
 result = response.json()
@@ -33,7 +33,7 @@ print(result["privacy"]["primaryCategory"])`;
 
   const jsCode = `const lookupProxy = async (query) => {
   const res = await fetch(
-    \`https://api.isbadip.com/api/v1/host/\${encodeURIComponent(query)}?mode=proxy\`,
+    \`https://api.isproxy.org/api/v1/host/\${encodeURIComponent(query)}?mode=proxy\`,
     {
       headers: { "x-isproxy-service": "1" }
     }

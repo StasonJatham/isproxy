@@ -23,7 +23,7 @@ export default defineConfig({
     port: 3000,
     proxy: {
       '/api': {
-        target: 'https://api.isbadip.com',
+        target: 'https://api.isproxy.org',
         changeOrigin: true,
         secure: true,
       },

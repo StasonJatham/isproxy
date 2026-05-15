@@ -3,14 +3,14 @@
 > Free IP and domain reputation lookup. Check whether an IPv4 address or hostname is on public threat lists (FireHOL, Spamhaus, malware/phishing/scanner feeds) and view geo, top-1M ranking, and resolved hostnames.
 
 ## API
-- Endpoint: https://api.isbadip.com/api/v1/host/{ip-or-domain}
+- Endpoint: https://api.isproxy.org/api/v1/host/{ip-or-domain}
 - Method: GET
 - Auth: none, free, no key required
 - Response: JSON. Fields include `valid`, `malicious`, `confidence`, `threat`, `geo`, `top1m`, `resolvedIPs`, `hostnames`.
 
 ## Examples
-- https://api.isbadip.com/api/v1/host/8.8.8.8
-- https://api.isbadip.com/api/v1/host/example.com
+- https://api.isproxy.org/api/v1/host/8.8.8.8
+- https://api.isproxy.org/api/v1/host/example.com
 
 ## Notes
 Data is aggregated from public threat-intel sources. No personal data is collected from queries.
