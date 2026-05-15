@@ -10,7 +10,7 @@ const App: React.FC = () => {
   );
 
   useEffect(() => {
-    document.title = currentHost ? `${currentHost} – isbadip.com` : 'isbadip.com';
+    document.title = currentHost ? `${currentHost} – isproxy.org` : 'isproxy.org';
   }, [currentHost]);
 
   const handleHostChange = useCallback((host: string) => {
@@ -35,7 +35,7 @@ const App: React.FC = () => {
       {/* Hero Section */}
       <section
         className="min-h-[100dvh] flex flex-col items-center justify-center px-5 sm:px-6 py-12"
-        aria-label="Reputation checker"
+        aria-label="Proxy intelligence checker"
       >
         <SearchCard onHostChange={handleHostChange} initialHost={currentHost} />
 

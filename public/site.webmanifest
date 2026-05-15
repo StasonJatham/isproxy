@@ -1,10 +1,10 @@
 {
-  "name": "isbadip",
-  "short_name": "isbadip",
-  "description": "Free IP and domain reputation lookup",
+  "name": "isproxy",
+  "short_name": "isproxy",
+  "description": "Free proxy and privacy-origin lookup",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#FDFCF8",
-  "theme_color": "#3B5B7B",
+  "background_color": "#F6FCFA",
+  "theme_color": "#226762",
   "icons": []
 }

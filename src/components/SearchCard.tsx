@@ -73,7 +73,7 @@ const SearchCard: React.FC<SearchCardProps> = ({ onHostChange, initialHost = '' 
             <ShieldIcon size={48} />
           </div>
           <span className="mt-3 text-xs font-medium tracking-[0.2em] uppercase text-text-muted">
-            isbadip.com
+            isproxy.org
           </span>
         </div>
 
@@ -95,14 +95,14 @@ const SearchCard: React.FC<SearchCardProps> = ({ onHostChange, initialHost = '' 
           className="text-center text-text-secondary text-base sm:text-lg mb-8 animate-fade-up"
           style={{ animationDelay: '250ms', opacity: 0 }}
         >
-          Instant reputation lookup. Free, fast, no account required.
+          Instant proxy, VPN, Tor, hosting, and residential-proxy signal lookup.
         </p>
 
         {/* Search Form */}
         <form
           onSubmit={handleSubmit}
           role="search"
-          aria-label="Reputation checker"
+          aria-label="Proxy intelligence checker"
           aria-busy={isLoading}
           className="animate-fade-up"
           style={{ animationDelay: '300ms', opacity: 0 }}
@@ -126,7 +126,7 @@ const SearchCard: React.FC<SearchCardProps> = ({ onHostChange, initialHost = '' 
               value={query}
               onChange={handleInputChange}
               placeholder="Enter IP address or domain..."
-              aria-label="Enter IP address or domain to check"
+              aria-label="Enter IP address or domain to inspect"
               disabled={isLoading}
               className="
                 flex-1 min-w-0 bg-transparent py-4 pl-5 pr-28 sm:pr-32
@@ -139,7 +139,7 @@ const SearchCard: React.FC<SearchCardProps> = ({ onHostChange, initialHost = '' 
             <button
               type="submit"
               disabled={isLoading || !query.trim()}
-              aria-label="Check reputation"
+              aria-label="Check proxy status"
               className="
                 absolute right-2 top-1/2 -translate-y-1/2
                 bg-accent-blue hover:bg-accent-blue-hover
@@ -178,7 +178,7 @@ const SearchCard: React.FC<SearchCardProps> = ({ onHostChange, initialHost = '' 
                     <p className="text-sm">Loading blocklist data from disk. Retrying automatically every 10s.</p>
                   </div>
                 ) : (
-                  <p>Looking up reputation data...</p>
+                  <p>Looking up proxy intelligence...</p>
                 )}
               </div>
             )}
@@ -207,21 +207,21 @@ const SearchCard: React.FC<SearchCardProps> = ({ onHostChange, initialHost = '' 
                     className={`
                       inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium
                       ${
-                        result.bad
+                        result.detected
                           ? 'bg-danger-coral/10 text-danger-coral border border-danger-coral/20'
                           : 'bg-success-green/10 text-success-green border border-success-green/20'
                       }
                     `}
                   >
-                    {result.bad ? (
+                    {result.detected ? (
                       <>
                         <AlertIcon size={16} />
-                        <span>Flagged</span>
+                        <span>Detected</span>
                       </>
                     ) : (
                       <>
                         <CheckIcon size={16} />
-                        <span>Clean</span>
+                        <span>No proxy signal</span>
                       </>
                     )}
                   </div>
@@ -230,7 +230,7 @@ const SearchCard: React.FC<SearchCardProps> = ({ onHostChange, initialHost = '' 
                 {/* Score Bar */}
                 <div className="mt-5">
                   <div className="flex justify-between items-center mb-2">
-                    <span className="text-sm text-text-secondary">Reputation score</span>
+                    <span className="text-sm text-text-secondary">Detection confidence</span>
                     <span className="text-sm font-medium font-mono text-text-primary">
                       {result.score}/100
                     </span>
@@ -248,14 +248,14 @@ const SearchCard: React.FC<SearchCardProps> = ({ onHostChange, initialHost = '' 
                       className="h-full rounded-full transition-all duration-700 ease-out"
                       style={{
                         width: `${result.score}%`,
-                        background: `linear-gradient(90deg, ${result.bad ? '#7D9B76' : '#7D9B76'} 0%, ${result.bad ? '#C67D6D' : '#7D9B76'} 100%)`,
+                        background: `linear-gradient(90deg, ${result.detected ? '#7D9B76' : '#7D9B76'} 0%, ${result.detected ? '#C67D6D' : '#7D9B76'} 100%)`,
                       }}
                     />
                   </div>
                   <p className="mt-1.5 text-xs text-text-muted">
-                    {result.bad
-                      ? 'This address has been flagged by reputation services.'
-                      : 'No malicious activity detected for this address.'}
+                    {result.detected
+                      ? `Primary classification: ${result.primaryCategory.replace(/_/g, ' ')}.`
+                      : 'No proxy, VPN, Tor, or residential-proxy signal detected for this address.'}
                   </p>
                 </div>
 
@@ -306,7 +306,7 @@ const SearchCard: React.FC<SearchCardProps> = ({ onHostChange, initialHost = '' 
 
       {/* Trust indicator below card */}
       <p className="text-center text-text-muted text-xs sm:text-sm mt-5 animate-fade-up" style={{ animationDelay: '350ms', opacity: 0 }}>
-        No data stored. No sign-up. Just results.
+        Free and open-source data only. Residential proxy detection is heuristic.
       </p>
     </div>
   );

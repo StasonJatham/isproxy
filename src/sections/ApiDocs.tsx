@@ -15,41 +15,55 @@ const ApiDocs: React.FC<ApiDocsProps> = ({ host }) => {
   const { ref: responseRef, isVisible: responseVisible } = useScrollReveal<HTMLDivElement>();
   const { ref: refTableRef, isVisible: refTableVisible } = useScrollReveal<HTMLDivElement>();
 
-  const exampleHost = host?.trim() || 'example.com';
-  const exampleHostPy = host?.trim() || '8.8.8.8';
+  const exampleHost = host?.trim() || '185.220.101.1';
+  const exampleDomain = host?.trim() || 'google.com';
 
-  const curlCode = `curl "https://api.isbadip.com/api/v1/host/${exampleHost}"`;
+  const curlCode = `curl "https://api.isbadip.com/api/v1/host/${exampleHost}?mode=proxy" \\
+  -H "x-isproxy-service: 1"`;
 
   const pythonCode = `import requests
 
 response = requests.get(
-    "https://api.isbadip.com/api/v1/host/${exampleHostPy}"
+    "https://api.isbadip.com/api/v1/host/${exampleHost}?mode=proxy",
+    headers={"x-isproxy-service": "1"},
 )
 result = response.json()
-print(result["valid"])       # True or False
-print(result["malicious"])   # True or False`;
+print(result["privacy"]["detected"])
+print(result["privacy"]["primaryCategory"])`;
 
-  const jsCode = `const checkReputation = async (query) => {
+  const jsCode = `const lookupProxy = async (query) => {
   const res = await fetch(
-    \`https://api.isbadip.com/api/v1/host/\${encodeURIComponent(query)}\`
+    \`https://api.isbadip.com/api/v1/host/\${encodeURIComponent(query)}?mode=proxy\`,
+    {
+      headers: { "x-isproxy-service": "1" }
+    }
   );
   return await res.json();
 };
 
-const result = await checkReputation("${exampleHostPy}");
-console.log(result.malicious); // true or false`;
+const result = await lookupProxy("${exampleDomain}");
+console.log(result.privacy.primaryCategory);`;
 
   const responseCode = `{
-  "query": "example.com",
-  "type": "domain",
+  "query": "${exampleHost}",
+  "type": "ip",
   "valid": true,
-  "malicious": false,
-  "confidence": null,
   "geo": {
-    "country": "US",
-    "city": "Los Angeles"
+    "country": "DE",
+    "city": "Brandenburg an der Havel"
   },
-  "resolvedIPs": ["93.184.216.34"]
+  "privacy": {
+    "detected": true,
+    "confidence": "high",
+    "primaryCategory": "tor",
+    "categories": ["tor"],
+    "reasons": ["Matched official/public Tor exit data"],
+    "observationCount": 0,
+    "asn": 60729,
+    "asnOrg": "TORSERVERS-NET",
+    "sourceTypes": ["tor_exit_addresses", "onionoo_running_exits"],
+    "honeypotSeen": false
+  }
 }`;
 
   const scrollRevealClass = (visible: boolean) =>
@@ -61,7 +75,6 @@ console.log(result.malicious); // true or false`;
       className="w-full max-w-[720px] mx-auto px-5 sm:px-6 pt-24 sm:pt-32 md:pt-[120px] pb-16"
       aria-labelledby="api-docs-heading"
     >
-      {/* Section Header */}
       <div
         ref={headerRef}
         className={`text-center mb-12 sm:mb-16 transition-all duration-500 ease-out ${scrollRevealClass(headerVisible)}`}
@@ -75,14 +88,13 @@ console.log(result.malicious); // true or false`;
           className="text-2xl sm:text-3xl md:text-[32px] font-medium text-text-primary tracking-tight mb-3"
           style={{ lineHeight: 1.25 }}
         >
-          Use it in your own tools
+          Query proxy intelligence from your own tools
         </h2>
         <p className="text-text-secondary text-base sm:text-lg max-w-md mx-auto">
-          A simple JSON API you can call from scripts, dashboards, or security pipelines.
+          Free and open-source data only. Residential proxy detection is confidence-based and heuristic.
         </p>
       </div>
 
-      {/* Code Examples */}
       <div className="space-y-8 sm:space-y-10">
         <div
           ref={curlRef}
@@ -117,7 +129,6 @@ console.log(result.malicious); // true or false`;
         </div>
       </div>
 
-      {/* Endpoint Reference */}
       <div
         ref={refTableRef}
         className={`mt-12 sm:mt-16 transition-all duration-500 ease-out ${scrollRevealClass(refTableVisible)}`}
@@ -129,7 +140,6 @@ console.log(result.malicious); // true or false`;
             <h3 className="text-sm font-medium uppercase tracking-wide">Endpoint Reference</h3>
           </div>
 
-          {/* Desktop Table */}
           <div className="hidden sm:block overflow-x-auto" role="region" aria-label="API endpoint reference">
             <table className="w-full text-sm">
               <thead>
@@ -141,7 +151,11 @@ console.log(result.malicious); // true or false`;
               <tbody>
                 <tr className="border-b border-border-subtle/50">
                   <td className="py-3 pr-4 text-text-secondary font-medium">Endpoint</td>
-                  <td className="py-3 pr-4 font-mono text-accent-blue">GET /api/v1/host/:query</td>
+                  <td className="py-3 pr-4 font-mono text-accent-blue">GET /api/v1/host/:query?mode=proxy</td>
+                </tr>
+                <tr className="border-b border-border-subtle/50">
+                  <td className="py-3 pr-4 text-text-secondary font-medium">Header</td>
+                  <td className="py-3 pr-4 font-mono text-text-primary">x-isproxy-service: 1</td>
                 </tr>
                 <tr className="border-b border-border-subtle/50">
                   <td className="py-3 pr-4 text-text-secondary font-medium">Parameter</td>
@@ -149,7 +163,7 @@ console.log(result.malicious); // true or false`;
                     <span className="text-code-key">:query</span>
                     <span className="text-text-muted mx-2">—</span>
                     <span className="text-text-secondary">path segment, required</span>
-                    <p className="text-text-muted text-xs mt-1">IP address or domain to check</p>
+                    <p className="text-text-muted text-xs mt-1">IP address or domain to inspect</p>
                   </td>
                 </tr>
                 <tr>
@@ -160,11 +174,14 @@ console.log(result.malicious); // true or false`;
             </table>
           </div>
 
-          {/* Mobile Definition List */}
           <dl className="sm:hidden space-y-4">
             <div>
               <dt className="text-xs text-text-muted font-medium uppercase tracking-wide mb-1">Endpoint</dt>
-              <dd className="font-mono text-accent-blue text-sm">GET /api/v1/host/:query</dd>
+              <dd className="font-mono text-accent-blue text-sm">GET /api/v1/host/:query?mode=proxy</dd>
+            </div>
+            <div>
+              <dt className="text-xs text-text-muted font-medium uppercase tracking-wide mb-1">Header</dt>
+              <dd className="font-mono text-text-primary text-sm">x-isproxy-service: 1</dd>
             </div>
             <div>
               <dt className="text-xs text-text-muted font-medium uppercase tracking-wide mb-1">Parameter</dt>
@@ -172,7 +189,7 @@ console.log(result.malicious); // true or false`;
                 <span className="text-code-key">:query</span>
                 <span className="text-text-muted mx-1.5">—</span>
                 <span className="text-text-secondary">path segment, required</span>
-                <p className="text-text-muted text-xs mt-1">IP address or domain to check</p>
+                <p className="text-text-muted text-xs mt-1">IP address or domain to inspect</p>
               </dd>
             </div>
             <div>

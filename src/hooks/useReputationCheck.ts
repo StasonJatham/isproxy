@@ -1,10 +1,10 @@
 import { useState, useCallback } from 'react';
-import type { ReputationResult, ApiStatus, ApiError, HostApiResponse, HostApiThreat } from '@/types/api';
+import type { ReputationResult, ApiStatus, ApiError, HostApiResponse } from '@/types/api';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? (import.meta.env.DEV ? '' : 'https://api.isbadip.com');
 
-function confidenceScore(confidence: HostApiResponse['confidence'], malicious: boolean) {
-  if (!malicious) return 0;
+function confidenceScore(confidence: HostApiResponse['privacy']['confidence'], detected: boolean) {
+  if (!detected) return 0;
   if (confidence === 'high') return 95;
   if (confidence === 'medium') return 75;
   if (confidence === 'low') return 55;
@@ -13,31 +13,6 @@ function confidenceScore(confidence: HostApiResponse['confidence'], malicious: b
 
 function unique(values: string[]) {
   return Array.from(new Set(values.filter(Boolean)));
-}
-
-function threatCategories(data: HostApiResponse) {
-  const threats: HostApiThreat[] = [
-    ...(data.threat ? [data.threat] : []),
-    ...(data.ip_threats ?? []),
-    ...(data.domain_threats ?? []),
-  ];
-
-  return unique(threats.flatMap((threat) => threat.categories ?? []));
-}
-
-function threatSources(data: HostApiResponse) {
-  const threats: HostApiThreat[] = [
-    ...(data.threat ? [data.threat] : []),
-    ...(data.ip_threats ?? []),
-    ...(data.domain_threats ?? []),
-  ];
-
-  return unique(threats.flatMap((threat) => threat.sources ?? []));
-}
-
-function topRank(top1m: HostApiResponse['top1m']) {
-  if (typeof top1m === 'number') return top1m;
-  return top1m?.rank ?? null;
 }
 
 function formatLocation(data: HostApiResponse) {
@@ -50,26 +25,37 @@ function mapApiResponse(data: HostApiResponse): ReputationResult {
     throw new Error(data.error ?? 'Input does not look like a valid IPv4 address or domain name.');
   }
 
-  const sources = threatSources(data);
-  const rank = topRank(data.top1m);
+  const privacy = data.privacy;
   const resolvedIPs = data.resolvedIPs ?? [];
   const hostnames = data.hostnames ?? [];
+  const categories = unique(privacy.categories ?? []);
+  const reasons = unique(privacy.reasons ?? []);
+  const sourceTypes = unique(privacy.sourceTypes ?? []);
 
   return {
     query: data.query,
-    bad: data.malicious,
-    score: confidenceScore(data.confidence, data.malicious),
-    categories: threatCategories(data),
-    checked_at: new Date().toISOString(),
+    detected: privacy.detected,
+    score: confidenceScore(privacy.confidence, privacy.detected),
+    primaryCategory: privacy.primaryCategory,
+    categories,
+    checkedAt: new Date().toISOString(),
     details: {
       type: data.type,
-      confidence: data.confidence ?? 'none',
-      match_type: data.threat?.matchType ?? null,
-      sources: sources.length > 0 ? sources.join(', ') : 'none',
+      confidence: privacy.confidence ?? 'none',
+      primary_category: privacy.primaryCategory,
+      asn: privacy.asn ?? null,
+      asn_org: privacy.asnOrg ?? null,
+      rdns: privacy.rdns ?? null,
+      source_types: sourceTypes.length > 0 ? sourceTypes.join(', ') : 'none',
+      reasons: reasons.length > 0 ? reasons.join(' | ') : 'none',
       geo: formatLocation(data),
-      top_1m_rank: rank ?? null,
+      first_seen: privacy.firstSeen ?? null,
+      last_seen: privacy.lastSeen ?? null,
+      observation_count: privacy.observationCount ?? 0,
+      honeypot_seen: privacy.honeypotSeen ?? false,
       resolved_ips: resolvedIPs.length > 0 ? resolvedIPs.join(', ') : null,
       hostnames: hostnames.length > 0 ? hostnames.join(', ') : null,
+      cached: data.cached ?? false,
     },
   };
 }
@@ -90,16 +76,16 @@ export function useReputationCheck() {
     for (let attempt = 0; attempt <= MAX_WARMUP_RETRIES; attempt++) {
       try {
         const response = await fetch(
-          `${API_BASE_URL}/api/v1/host/${encodeURIComponent(query)}`,
+          `${API_BASE_URL}/api/v1/host/${encodeURIComponent(query)}?mode=proxy`,
           {
             method: 'GET',
             headers: {
               'Accept': 'application/json',
+              'x-isproxy-service': '1',
             },
           }
         );
 
-        // Service is warming up — wait and retry automatically
         if (response.status === 503 && attempt < MAX_WARMUP_RETRIES) {
           setStatus('warming_up');
           await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS));
@@ -123,7 +109,6 @@ export function useReputationCheck() {
       }
     }
 
-    // Exhausted retries — still warming up
     setError({ message: 'Service is still warming up after several retries. Please try again in a moment.' });
     setStatus('error');
   }, []);
