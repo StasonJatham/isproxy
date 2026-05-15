@@ -50,6 +50,19 @@ const Footer: React.FC = () => {
         <p className="mx-auto max-w-2xl text-balance text-[11px] leading-5 text-text-muted sm:text-xs">
           Information is provided for general informational purposes only, on an as-is and as-available basis, without warranties of any kind. Classification results are heuristic and may be incomplete, delayed, or inaccurate. Do not rely on this service as legal, security, compliance, or professional advice. Use is at your own risk.
         </p>
+
+        <p className="text-[11px] leading-5 text-text-muted sm:text-xs">
+          Need malicious IP reputation too? Try{" "}
+          <a
+            href="https://isbadip.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-text-secondary transition-colors duration-200"
+          >
+            isbadip.com
+          </a>
+          .
+        </p>
       </div>
     </footer>
   );
