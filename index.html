@@ -6,6 +6,8 @@
     <meta name="description" content="Check whether an IP or domain looks like Tor, an open proxy, a VPN, hosting, or a suspicious residential proxy. Free and open-source data only." />
     <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
     <meta name="keywords" content="proxy lookup, vpn detection, tor exit node lookup, residential proxy detection, open proxy check, hosting ip check, isproxy" />
+    <meta name="application-name" content="isproxy.org" />
+    <meta name="apple-mobile-web-app-title" content="isproxy.org" />
     <meta name="theme-color" content="#226762" />
     <link rel="canonical" href="https://isproxy.org/" />
     <link rel="manifest" href="/site.webmanifest" />
@@ -14,14 +16,28 @@
     <meta property="og:title" content="isproxy.org — Proxy & Privacy-Origin Check" />
     <meta property="og:description" content="Free proxy intelligence lookup for Tor, open proxies, VPN/datacenter ranges, hosting, and heuristic residential-proxy detection." />
     <meta property="og:site_name" content="isproxy.org" />
+    <meta property="og:image" content="https://isproxy.org/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="isproxy.org proxy lookup homepage" />
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="isproxy.org — Proxy & Privacy-Origin Check" />
     <meta name="twitter:description" content="Free proxy intelligence lookup." />
+    <meta name="twitter:image" content="https://isproxy.org/og-image.jpg" />
     <title>isproxy.org — Proxy & Privacy-Origin Check</title>
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@graph": [
+          {
+            "@type": "Organization",
+            "name": "isproxy.org",
+            "url": "https://isproxy.org/",
+            "logo": "https://isproxy.org/og-image.jpg",
+            "sameAs": [
+              "https://github.com/StasonJatham/isproxy"
+            ]
+          },
           {
             "@type": "WebSite",
             "name": "isproxy.org",
@@ -50,6 +66,17 @@
               "price": "0",
               "priceCurrency": "USD"
             }
+          },
+          {
+            "@type": "WebAPI",
+            "name": "isproxy API",
+            "url": "https://api.isproxy.org/api/v1/host/1.1.1.1",
+            "documentation": "https://isproxy.org/",
+            "provider": {
+              "@type": "Organization",
+              "name": "isproxy.org"
+            },
+            "description": "Public API for proxy, VPN, Tor, hosting, and residential-proxy signal lookups."
           }
         ]
       }
