@@ -1,8 +1,10 @@
 {
-  "name": "isproxy",
+  "id": "/",
+  "name": "isproxy.org",
   "short_name": "isproxy",
   "description": "Free proxy and privacy-origin lookup",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#F6FCFA",
   "theme_color": "#226762",

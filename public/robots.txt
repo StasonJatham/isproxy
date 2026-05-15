@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
 
+Host: isproxy.org
 Sitemap: https://isproxy.org/sitemap.xml
