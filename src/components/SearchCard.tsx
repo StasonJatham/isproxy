@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
+import { GlobeLock } from 'lucide-react';
 import { useReputationCheck } from '@/hooks/useReputationCheck';
-import { ShieldIcon, CheckIcon, AlertIcon, LoadingDots } from '@/components/icons';
+import { CheckIcon, AlertIcon, LoadingDots } from '@/components/icons';
 
 interface SearchCardProps {
   onHostChange?: (host: string) => void;
@@ -67,10 +68,10 @@ const SearchCard: React.FC<SearchCardProps> = ({ onHostChange, initialHost = '' 
       style={{ animationDelay: '150ms', opacity: 0 }}
     >
       <div className="glass-card p-8 sm:p-10 md:p-10">
-        {/* Shield Icon */}
+        {/* GlobeLock Icon */}
         <div className="flex flex-col items-center mb-6">
           <div className="text-accent-blue animate-float" aria-hidden="true">
-            <ShieldIcon size={48} />
+            <GlobeLock size={48} strokeWidth={1.8} />
           </div>
           <span className="mt-3 text-xs font-medium tracking-[0.2em] uppercase text-text-muted">
             isproxy.org
