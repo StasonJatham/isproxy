@@ -55,7 +55,10 @@ function buildDetails(data: HostApiResponse): Record<string, string | number | b
     ['recent_web_window_hours', evidence?.highSignalPathsHit?.windowHours ?? null],
     ['login_post_count', evidence?.loginPostCount && evidence.loginPostCount > 0 ? evidence.loginPostCount : null],
     ['sensor_types', evidence?.sensorTypes && evidence.sensorTypes.length > 0 ? evidence.sensorTypes.join(', ') : null],
+    ['sensor_families', evidence?.sensorFamilies && Object.keys(evidence.sensorFamilies).length > 0 ? Object.entries(evidence.sensorFamilies).map(([key, value]) => `${key}:${value}`).join(', ') : null],
     ['event_counts', evidence?.eventCounts && Object.keys(evidence.eventCounts).length > 0 ? Object.entries(evidence.eventCounts).map(([key, value]) => `${key}:${value}`).join(', ') : null],
+    ['trigger_window_minutes', evidence?.highSignalPathsHit?.triggerWindowMinutes ?? null],
+    ['trigger_high_signal_pairs', evidence?.highSignalPathsHit?.triggerPairCount ?? null],
     ['last_evaluated_at', data.freshness?.lastEvaluatedAt ?? null],
     ['cache_age_seconds', typeof data.freshness?.cacheAgeSeconds === 'number' ? data.freshness.cacheAgeSeconds : null],
   ];

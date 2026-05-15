@@ -63,9 +63,12 @@ export interface HostApiPrivacy {
       top: string[];
       weightedScore?: number;
       windowHours?: number;
+      triggerPairCount?: number;
+      triggerWindowMinutes?: number;
     };
     loginPostCount?: number;
     sensorTypes?: string[];
+    sensorFamilies?: Record<string, number>;
     eventCounts?: Record<string, number>;
   };
   honeypotSeen?: boolean;
