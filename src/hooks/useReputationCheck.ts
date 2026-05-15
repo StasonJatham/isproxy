@@ -20,17 +20,51 @@ function formatLocation(data: HostApiResponse) {
   return parts.length > 0 ? parts.join(', ') : null;
 }
 
-function mapApiResponse(data: HostApiResponse): ReputationResult {
-  if (!data.valid) {
-    throw new Error(data.error ?? 'Input does not look like a valid IPv4 address or domain name.');
-  }
-
+function buildDetails(data: HostApiResponse): Record<string, string | number | boolean | null> {
   const privacy = data.privacy;
   const resolvedIPs = data.resolvedIPs ?? [];
   const hostnames = data.hostnames ?? [];
   const categories = unique(privacy.categories ?? []);
   const reasons = unique(privacy.reasons ?? []);
   const sourceTypes = unique(privacy.sourceTypes ?? []);
+  const details: Record<string, string | number | boolean | null> = {
+    type: data.type,
+    confidence: privacy.confidence ?? 'none',
+    primary_category: privacy.primaryCategory,
+    asn: privacy.asn ?? null,
+    asn_org: privacy.asnOrg ?? null,
+  };
+
+  const optionalDetails: Array<[string, string | number | boolean | null]> = [
+    ['rdns', privacy.rdns ?? null],
+    ['source_types', sourceTypes.length > 0 ? sourceTypes.join(', ') : null],
+    ['reasons', reasons.length > 0 ? reasons.join(' | ') : null],
+    ['geo', formatLocation(data)],
+    ['first_seen', privacy.firstSeen ?? null],
+    ['last_seen', privacy.lastSeen ?? null],
+    ['observation_count', (privacy.observationCount ?? 0) > 0 ? (privacy.observationCount ?? 0) : null],
+    ['honeypot_seen', privacy.honeypotSeen ? true : null],
+    ['resolved_ips', resolvedIPs.length > 0 ? resolvedIPs.join(', ') : null],
+    ['hostnames', hostnames.length > 0 ? hostnames.join(', ') : null],
+    ['categories', categories.length > 1 ? categories.join(', ') : null],
+  ];
+
+  for (const [key, value] of optionalDetails) {
+    if (value !== null && value !== '') {
+      details[key] = value;
+    }
+  }
+
+  return details;
+}
+
+function mapApiResponse(data: HostApiResponse): ReputationResult {
+  if (!data.valid) {
+    throw new Error(data.error ?? 'Input does not look like a valid IPv4 address or domain name.');
+  }
+
+  const privacy = data.privacy;
+  const categories = unique(privacy.categories ?? []);
 
   return {
     query: data.query,
@@ -39,24 +73,7 @@ function mapApiResponse(data: HostApiResponse): ReputationResult {
     primaryCategory: privacy.primaryCategory,
     categories,
     checkedAt: new Date().toISOString(),
-    details: {
-      type: data.type,
-      confidence: privacy.confidence ?? 'none',
-      primary_category: privacy.primaryCategory,
-      asn: privacy.asn ?? null,
-      asn_org: privacy.asnOrg ?? null,
-      rdns: privacy.rdns ?? null,
-      source_types: sourceTypes.length > 0 ? sourceTypes.join(', ') : 'none',
-      reasons: reasons.length > 0 ? reasons.join(' | ') : 'none',
-      geo: formatLocation(data),
-      first_seen: privacy.firstSeen ?? null,
-      last_seen: privacy.lastSeen ?? null,
-      observation_count: privacy.observationCount ?? 0,
-      honeypot_seen: privacy.honeypotSeen ?? false,
-      resolved_ips: resolvedIPs.length > 0 ? resolvedIPs.join(', ') : null,
-      hostnames: hostnames.length > 0 ? hostnames.join(', ') : null,
-      cached: data.cached ?? false,
-    },
+    details: buildDetails(data),
   };
 }
 
