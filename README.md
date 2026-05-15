@@ -15,10 +15,9 @@ This frontend is the browser-facing sibling to `isbadip`, but the result model i
 - heuristic residential-proxy suspicion
 - honeypot observation visibility
 
-The backend is currently served by the shared public API host and selected in request mode:
+The backend is currently served publicly at:
 
-- `GET https://api.isproxy.org/api/v1/host/{query}?mode=proxy`
-- header: `x-isproxy-service: 1`
+- `GET https://api.isproxy.org/api/v1/host/{query}`
 
 ## Status
 

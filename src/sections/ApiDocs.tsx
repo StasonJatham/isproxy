@@ -18,26 +18,17 @@ const ApiDocs: React.FC<ApiDocsProps> = ({ host }) => {
   const exampleHost = host?.trim() || '185.220.101.1';
   const exampleDomain = host?.trim() || 'google.com';
 
-  const curlCode = `curl "https://api.isproxy.org/api/v1/host/${exampleHost}?mode=proxy" \\
-  -H "x-isproxy-service: 1"`;
+  const curlCode = `curl "https://api.isproxy.org/api/v1/host/${exampleHost}"`;
 
   const pythonCode = `import requests
 
-response = requests.get(
-    "https://api.isproxy.org/api/v1/host/${exampleHost}?mode=proxy",
-    headers={"x-isproxy-service": "1"},
-)
+response = requests.get("https://api.isproxy.org/api/v1/host/${exampleHost}")
 result = response.json()
 print(result["privacy"]["detected"])
 print(result["privacy"]["primaryCategory"])`;
 
   const jsCode = `const lookupProxy = async (query) => {
-  const res = await fetch(
-    \`https://api.isproxy.org/api/v1/host/\${encodeURIComponent(query)}?mode=proxy\`,
-    {
-      headers: { "x-isproxy-service": "1" }
-    }
-  );
+  const res = await fetch(\`https://api.isproxy.org/api/v1/host/\${encodeURIComponent(query)}\`);
   return await res.json();
 };
 
@@ -151,11 +142,11 @@ console.log(result.privacy.primaryCategory);`;
               <tbody>
                 <tr className="border-b border-border-subtle/50">
                   <td className="py-3 pr-4 text-text-secondary font-medium">Endpoint</td>
-                  <td className="py-3 pr-4 font-mono text-accent-blue">GET /api/v1/host/:query?mode=proxy</td>
+                  <td className="py-3 pr-4 font-mono text-accent-blue">GET /api/v1/host/:query</td>
                 </tr>
                 <tr className="border-b border-border-subtle/50">
                   <td className="py-3 pr-4 text-text-secondary font-medium">Header</td>
-                  <td className="py-3 pr-4 font-mono text-text-primary">x-isproxy-service: 1</td>
+                  <td className="py-3 pr-4 font-mono text-text-primary">None</td>
                 </tr>
                 <tr className="border-b border-border-subtle/50">
                   <td className="py-3 pr-4 text-text-secondary font-medium">Parameter</td>
@@ -177,11 +168,11 @@ console.log(result.privacy.primaryCategory);`;
           <dl className="sm:hidden space-y-4">
             <div>
               <dt className="text-xs text-text-muted font-medium uppercase tracking-wide mb-1">Endpoint</dt>
-              <dd className="font-mono text-accent-blue text-sm">GET /api/v1/host/:query?mode=proxy</dd>
+              <dd className="font-mono text-accent-blue text-sm">GET /api/v1/host/:query</dd>
             </div>
             <div>
               <dt className="text-xs text-text-muted font-medium uppercase tracking-wide mb-1">Header</dt>
-              <dd className="font-mono text-text-primary text-sm">x-isproxy-service: 1</dd>
+              <dd className="font-mono text-text-primary text-sm">None</dd>
             </div>
             <div>
               <dt className="text-xs text-text-muted font-medium uppercase tracking-wide mb-1">Parameter</dt>

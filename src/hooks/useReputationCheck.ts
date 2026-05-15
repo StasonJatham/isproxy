@@ -75,16 +75,12 @@ export function useReputationCheck() {
 
     for (let attempt = 0; attempt <= MAX_WARMUP_RETRIES; attempt++) {
       try {
-        const response = await fetch(
-          `${API_BASE_URL}/api/v1/host/${encodeURIComponent(query)}?mode=proxy`,
-          {
-            method: 'GET',
-            headers: {
-              'Accept': 'application/json',
-              'x-isproxy-service': '1',
-            },
-          }
-        );
+        const response = await fetch(`${API_BASE_URL}/api/v1/host/${encodeURIComponent(query)}`, {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+          },
+        });
 
         if (response.status === 503 && attempt < MAX_WARMUP_RETRIES) {
           setStatus('warming_up');
