@@ -25,28 +25,39 @@ function buildDetails(data: HostApiResponse): Record<string, string | number | b
   const resolvedIPs = data.resolvedIPs ?? [];
   const hostnames = data.hostnames ?? [];
   const categories = unique(privacy.categories ?? []);
-  const reasons = unique(privacy.reasons ?? []);
-  const sourceTypes = unique(privacy.sourceTypes ?? []);
+  const matchedSources = privacy.matchedSources;
+  const evidence = privacy.evidence;
   const details: Record<string, string | number | boolean | null> = {
     type: data.type,
     confidence: privacy.confidence ?? 'none',
     primary_category: privacy.primaryCategory,
+    classification_basis: privacy.classificationBasis ?? 'none',
     asn: privacy.asn ?? null,
     asn_org: privacy.asnOrg ?? null,
   };
 
   const optionalDetails: Array<[string, string | number | boolean | null]> = [
     ['rdns', privacy.rdns ?? null],
-    ['source_types', sourceTypes.length > 0 ? sourceTypes.join(', ') : null],
-    ['reasons', reasons.length > 0 ? reasons.join(' | ') : null],
+    ['confidence_reason', privacy.confidenceReason ?? null],
     ['geo', formatLocation(data)],
     ['first_seen', privacy.firstSeen ?? null],
     ['last_seen', privacy.lastSeen ?? null],
     ['observation_count', (privacy.observationCount ?? 0) > 0 ? (privacy.observationCount ?? 0) : null],
-    ['honeypot_seen', privacy.honeypotSeen ? true : null],
     ['resolved_ips', resolvedIPs.length > 0 ? resolvedIPs.join(', ') : null],
     ['hostnames', hostnames.length > 0 ? hostnames.join(', ') : null],
     ['categories', categories.length > 1 ? categories.join(', ') : null],
+    ['matched_sources', matchedSources && matchedSources.count > 0 ? `${matchedSources.count} (${matchedSources.top.join(', ')})` : null],
+    ['matched_source_categories', matchedSources?.categories && matchedSources.categories.length > 0 ? matchedSources.categories.join(', ') : null],
+    ['feed_matches', evidence?.feedMatches && evidence.feedMatches.count > 0 ? `${evidence.feedMatches.count} (${evidence.feedMatches.top.join(', ')})` : null],
+    ['bait_hosts_hit', evidence?.baitHostsHit && evidence.baitHostsHit.count > 0 ? `${evidence.baitHostsHit.count} (${evidence.baitHostsHit.top.join(', ')})` : null],
+    ['high_signal_paths_hit', evidence?.highSignalPathsHit && evidence.highSignalPathsHit.count > 0 ? `${evidence.highSignalPathsHit.count} (${evidence.highSignalPathsHit.top.join(', ')})` : null],
+    ['recent_web_signal_weight', evidence?.highSignalPathsHit?.weightedScore ?? null],
+    ['recent_web_window_hours', evidence?.highSignalPathsHit?.windowHours ?? null],
+    ['login_post_count', evidence?.loginPostCount && evidence.loginPostCount > 0 ? evidence.loginPostCount : null],
+    ['sensor_types', evidence?.sensorTypes && evidence.sensorTypes.length > 0 ? evidence.sensorTypes.join(', ') : null],
+    ['event_counts', evidence?.eventCounts && Object.keys(evidence.eventCounts).length > 0 ? Object.entries(evidence.eventCounts).map(([key, value]) => `${key}:${value}`).join(', ') : null],
+    ['last_evaluated_at', data.freshness?.lastEvaluatedAt ?? null],
+    ['cache_age_seconds', typeof data.freshness?.cacheAgeSeconds === 'number' ? data.freshness.cacheAgeSeconds : null],
   ];
 
   for (const [key, value] of optionalDetails) {
@@ -71,6 +82,9 @@ function mapApiResponse(data: HostApiResponse): ReputationResult {
     detected: privacy.detected,
     score: confidenceScore(privacy.confidence, privacy.detected),
     primaryCategory: privacy.primaryCategory,
+    summary: privacy.summary ?? null,
+    confidenceReason: privacy.confidenceReason ?? null,
+    classificationBasis: privacy.classificationBasis ?? null,
     categories,
     checkedAt: new Date().toISOString(),
     details: buildDetails(data),

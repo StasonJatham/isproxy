@@ -254,10 +254,20 @@ const SearchCard: React.FC<SearchCardProps> = ({ onHostChange, initialHost = '' 
                     />
                   </div>
                   <p className="mt-1.5 text-xs text-text-muted">
-                    {result.detected
+                    {result.summary || (result.detected
                       ? `Primary classification: ${result.primaryCategory.replace(/_/g, ' ')}.`
-                      : 'No proxy, VPN, Tor, or residential-proxy signal detected for this address.'}
+                      : 'No proxy, VPN, Tor, or residential-proxy signal detected for this address.')}
                   </p>
+                  {result.confidenceReason && (
+                    <p className="mt-2 text-xs text-text-secondary">
+                      {result.confidenceReason}
+                    </p>
+                  )}
+                  {result.classificationBasis && result.classificationBasis !== 'none' && (
+                    <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-text-muted">
+                      Basis: {result.classificationBasis}
+                    </p>
+                  )}
                 </div>
 
                 {/* Categories */}

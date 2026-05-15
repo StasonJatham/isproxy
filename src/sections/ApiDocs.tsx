@@ -46,14 +46,38 @@ console.log(result.privacy.primaryCategory);`;
   "privacy": {
     "detected": true,
     "confidence": "high",
+    "confidenceReason": "Matched authoritative Tor exit data.",
     "primaryCategory": "tor",
+    "classificationBasis": "feed",
     "categories": ["tor"],
     "reasons": ["Matched official/public Tor exit data"],
+    "summary": "Matched official/public Tor exit infrastructure.",
     "observationCount": 0,
     "asn": 60729,
     "asnOrg": "TORSERVERS-NET",
-    "sourceTypes": ["tor_exit_addresses", "onionoo_running_exits"],
+    "matchedSources": {
+      "count": 2,
+      "top": ["tor_exit_addresses", "onionoo_running_exits"],
+      "categories": ["tor"]
+    },
+    "evidence": {
+      "feedMatches": {
+        "count": 2,
+        "top": ["tor_exit_addresses", "onionoo_running_exits"],
+        "categories": ["tor"]
+      },
+      "baitHostsHit": { "count": 0, "top": [] },
+      "highSignalPathsHit": { "count": 0, "top": [], "weightedScore": 0, "windowHours": 72 },
+      "loginPostCount": 0,
+      "sensorTypes": [],
+      "eventCounts": {}
+    },
     "honeypotSeen": false
+  },
+  "freshness": {
+    "lastEvaluatedAt": "2026-05-15T10:00:00Z",
+    "cacheAgeSeconds": 12,
+    "cached": true
   }
 }`;
 

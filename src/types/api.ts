@@ -3,6 +3,9 @@ export interface ReputationResult {
   detected: boolean;
   score: number;
   primaryCategory: string;
+  summary?: string | null;
+  confidenceReason?: string | null;
+  classificationBasis?: string | null;
   categories?: string[];
   checkedAt?: string;
   details?: Record<string, string | number | boolean | null>;
@@ -27,9 +30,12 @@ export interface HostApiGeo {
 export interface HostApiPrivacy {
   detected: boolean;
   confidence?: 'low' | 'medium' | 'high' | null;
+  confidenceReason?: string | null;
   primaryCategory: 'tor' | 'open_proxy' | 'vpn_or_datacenter' | 'hosting' | 'suspected_residential_proxy' | 'unknown';
+  classificationBasis?: 'feed' | 'behavioral' | 'mixed' | 'none';
   categories?: string[];
   reasons?: string[];
+  summary?: string | null;
   firstSeen?: string | null;
   lastSeen?: string | null;
   observationCount?: number | null;
@@ -37,7 +43,38 @@ export interface HostApiPrivacy {
   asnOrg?: string | null;
   rdns?: string | null;
   sourceTypes?: string[];
+  matchedSources?: {
+    count: number;
+    top: string[];
+    categories?: string[];
+  };
+  evidence?: {
+    feedMatches?: {
+      count: number;
+      top: string[];
+      categories?: string[];
+    };
+    baitHostsHit?: {
+      count: number;
+      top: string[];
+    };
+    highSignalPathsHit?: {
+      count: number;
+      top: string[];
+      weightedScore?: number;
+      windowHours?: number;
+    };
+    loginPostCount?: number;
+    sensorTypes?: string[];
+    eventCounts?: Record<string, number>;
+  };
   honeypotSeen?: boolean;
+}
+
+export interface HostApiFreshness {
+  lastEvaluatedAt?: string | null;
+  cacheAgeSeconds?: number | null;
+  cached?: boolean;
 }
 
 export interface HostApiResponse {
@@ -49,6 +86,7 @@ export interface HostApiResponse {
   resolvedIPs?: string[];
   hostnames?: string[];
   cached?: boolean;
+  freshness?: HostApiFreshness;
   cacheExpires?: string;
   error?: string;
 }
