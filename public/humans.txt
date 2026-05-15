@@ -1,0 +1,7 @@
+/* TEAM */
+Owner: Karl
+Site: https://isproxy.org
+GitHub: https://github.com/StasonJatham/isproxy
+
+/* THANKS */
+Built with open data, local tooling, and too much curiosity.
